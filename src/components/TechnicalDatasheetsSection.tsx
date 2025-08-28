@@ -9,22 +9,22 @@ const TechnicalDatasheetsSection: React.FC = () => {
     {
       title: t('datasheets.betonC30'),
       file: isRTL ? './assets/BETON-C30-ar.pdf' : './assets/BETON-C30.pdf',
-      image: 'https://dummyimage.com/150x150/cccccc/000000&text=Beton+C30',
+  image: './assets/TOUPIE-BETON.png',
     },
     {
       title: t('datasheets.betonC25'),
       file: isRTL ? './assets/BETON-C25-ar.pdf' : './assets/BETON-C25.pdf',
-      image: 'https://dummyimage.com/150x150/cccccc/000000&text=Beton+C25',
+  image: './assets/TOUPIE-BETON.png',
     },
     {
       title: t('datasheets.betonC20'),
       file: isRTL ? './assets/BETON-C20-ar.pdf' : './assets/BETON-C20.pdf',
-      image: 'https://dummyimage.com/150x150/cccccc/000000&text=Beton+C20',
+  image: './assets/TOUPIE-BETON.png',
     },
     {
       title: t('datasheets.betonC15'),
       file: isRTL ? './assets/BETON-C15-ar.pdf' : './assets/BETON-C15.pdf',
-      image: 'https://dummyimage.com/150x150/cccccc/000000&text=Beton+C15',
+  image: './assets/TOUPIE-BETON.png',
     },
     {
       title: t('datasheets.cemI42_5R_SR'),
@@ -71,7 +71,7 @@ const TechnicalDatasheetsSection: React.FC = () => {
               <img
                 src={sheet.image}
                 alt={sheet.title}
-                className="w-full h-32 object-contain rounded-md mb-4 transition-transform duration-300 hover:scale-105"
+                className="w-36 h-36 object-contain mx-auto rounded-md mb-4 transition-transform duration-300 hover:scale-105"
               />
               <h3 className="text-xl font-semibold text-primary mb-4">{sheet.title}</h3>
               <a
