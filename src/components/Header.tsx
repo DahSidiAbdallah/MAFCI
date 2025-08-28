@@ -65,7 +65,7 @@ const Header: React.FC = () => {
                 <FaFacebook size={18} />
               </a>
               <a
-                href="https://www.youtube.com/@MAFCI-g2e"
+                href="https://www.youtube.com/@MAFCI_mr"
                 className="text-secondary hover:text-primary transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -161,7 +161,7 @@ const Header: React.FC = () => {
                   <FaFacebook size={20} />
                 </a>
                 <a
-                  href="https://www.youtube.com/@MAFCI-g2e"
+                  href="https://www.youtube.com/@MAFCI_mr"
                   className="text-secondary hover:text-primary transition-colors"
                   target="_blank"
                   rel="noopener noreferrer"

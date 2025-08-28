@@ -155,9 +155,9 @@ i18n
           "contact.locations.title": "Nos Localisations",
           "contact.locations.hq.title": "Siège Social (HQ)",
           "contact.locations.hq.address": "Avenue Yasser Arafat, Nouakchott, Mauritanie",
-          "contact.locations.port.title": "Direction Technique au Port",
+          "contact.locations.port.title": "Usine Ciment",
           "contact.locations.port.address": "Zone portuaire , lot 1, BP 5291, Nouakchott, Mauritanie",
-          "contact.locations.bpe.title": "Direction BPE",
+          "contact.locations.bpe.title": "Usine BPE",
           "contact.locations.bpe.address": "Zone Industrielle, Nouakchott, Mauritanie",
           "contact.locations.clickToMap": "Cliquez pour ouvrir dans Google Maps",
           "contact.phone": "Téléphone",
@@ -181,6 +181,8 @@ i18n
           "contact.form.error": "Une erreur s'est produite",
           "contact.address.value": "Avenue Yasser Arafat",
           "contact.address.country": "Mauritanie",
+          "contact.address.city": "Nouakchott",
+          "contact.address.zip": "BP 5291",
 
           // Footer
           "footer.company": "Entreprise",
@@ -348,9 +350,9 @@ i18n
           "contact.locations.title": "مواقعنا",
           "contact.locations.hq.title": "المقر الرئيسي",
           "contact.locations.hq.address": "طريق ياسر عرفات، نواكشوط، موريتانيا",
-          "contact.locations.port.title": "الإدارة الفنية بالميناء",
+          "contact.locations.port.title": "مصنع الأسمنت بالميناء",
           "contact.locations.port.address": "المنطقة الحرة، نواكشوط، موريتانيا",
-          "contact.locations.bpe.title": "إدارة الخرسانة الجاهزة",
+          "contact.locations.bpe.title": "مصنع الخرسانة BPE",
           "contact.locations.bpe.address": "المنطقة الصناعية، نواكشوط، موريتانيا",
           "contact.locations.clickToMap": "انقر للفتح في خرائط جوجل",
           "contact.phone": "الهاتف",
@@ -372,6 +374,9 @@ i18n
           "contact.form.send": "إرسال الرسالة",
           "contact.form.success": "تم إرسال الرسالة بنجاح",
           "contact.form.error": "حدث خطأ ما",
+          "contact.address.value": "طريق ياسر عرفات",
+          "contact.address.city": "نواكشوط",
+          "contact.address.country": "موريتانيا",
 
           // Footer
           "footer.company": "الشركة",
