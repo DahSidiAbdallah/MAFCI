@@ -14,17 +14,17 @@ const TechnicalDatasheetsSection: React.FC = () => {
     {
       title: t('datasheets.betonC25'),
       file: isRTL ? './assets/BETON-C25-ar.pdf' : './assets/BETON-C25.pdf',
-  image: './assets/TOUPIE-BETON.png',
+  image: './assets/TOUPIE-BLEU.png',
     },
     {
       title: t('datasheets.betonC20'),
       file: isRTL ? './assets/BETON-C20-ar.pdf' : './assets/BETON-C20.pdf',
-  image: './assets/TOUPIE-BETON.png',
+  image: './assets/TOUPIE-GREEN.png',
     },
     {
       title: t('datasheets.betonC15'),
       file: isRTL ? './assets/BETON-C15-ar.pdf' : './assets/BETON-C15.pdf',
-  image: './assets/TOUPIE-BETON.png',
+  image: './assets/TOUPIE-CYAN.png',
     },
     {
       title: t('datasheets.cemI42_5R_SR'),
