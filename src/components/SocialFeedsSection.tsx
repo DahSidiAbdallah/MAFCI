@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 const FACEBOOK_PAGE_URL = "https://www.facebook.com/MAFCImr";
 const TWITTER_HANDLE = "mafcimr";
 const YOUTUBE_CHANNEL_ID = "UCzoxWhVUNk8h0xfxj-Zj-bw"; // Channel ID for @MAFCI_mr
-const YOUTUBE_API_KEY = "AIzaSyAp40BHGoVaUCqiy-VL310npWA8jSWY0Y0";
+const YOUTUBE_API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY;
 const YOUTUBE_MAX_RESULTS = 1;
 
 const SocialFeedsSection: React.FC = () => {
