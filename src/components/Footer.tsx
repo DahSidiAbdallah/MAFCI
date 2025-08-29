@@ -2,7 +2,7 @@ import React from 'react';
 import { FaFacebook, FaTiktok, FaLinkedin, FaYoutube, FaTwitter } from 'react-icons/fa';
 import { Phone, Mail, MapPin } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import FooterLogo from '../assets/MAFCI footer.png';
+import FooterLogo from '../assets/MAFCI.png';
 
 type ContactItemProps = {
   icon: React.ReactNode;
@@ -26,7 +26,7 @@ const SocialLinks: React.FC<{ isRTL: boolean }> = ({ isRTL }) => (
   <div className={`flex ${isRTL ? 'justify-end' : ''} gap-4`}>
     <a
       href="https://www.facebook.com/MAFCImr"
-      className="bg-secondary-light hover:bg-primary p-2 rounded-full transition-colors"
+      className="bg-white border border-blue-200 text-blue-700 hover:bg-blue-100 hover:text-blue-900 p-2 rounded-full transition-colors shadow-sm"
       target="_blank"
       rel="noopener noreferrer"
     >
@@ -34,7 +34,7 @@ const SocialLinks: React.FC<{ isRTL: boolean }> = ({ isRTL }) => (
     </a>
     <a
       href="https://www.linkedin.com/company/mafcimr/"
-      className="bg-secondary-light hover:bg-primary p-2 rounded-full transition-colors"
+      className="bg-white border border-blue-200 text-blue-700 hover:bg-blue-100 hover:text-blue-900 p-2 rounded-full transition-colors shadow-sm"
       target="_blank"
       rel="noopener noreferrer"
     >
@@ -42,7 +42,7 @@ const SocialLinks: React.FC<{ isRTL: boolean }> = ({ isRTL }) => (
     </a>
     <a
       href="https://www.tiktok.com/@mafci_mr"
-      className="bg-secondary-light hover:bg-primary p-2 rounded-full transition-colors"
+      className="bg-white border border-blue-200 text-blue-700 hover:bg-blue-100 hover:text-blue-900 p-2 rounded-full transition-colors shadow-sm"
       target="_blank"
       rel="noopener noreferrer"
     >
@@ -50,7 +50,7 @@ const SocialLinks: React.FC<{ isRTL: boolean }> = ({ isRTL }) => (
     </a>
     <a
       href="https://x.com/mafcimr"
-      className="bg-secondary-light hover:bg-primary p-2 rounded-full transition-colors"
+      className="bg-white border border-blue-200 text-blue-700 hover:bg-blue-100 hover:text-blue-900 p-2 rounded-full transition-colors shadow-sm"
       target="_blank"
       rel="noopener noreferrer"
     >
@@ -58,7 +58,7 @@ const SocialLinks: React.FC<{ isRTL: boolean }> = ({ isRTL }) => (
     </a>
     <a
       href="https://www.youtube.com/@MAFCI_mr"
-      className="bg-secondary-light hover:bg-primary p-2 rounded-full transition-colors"
+      className="bg-white border border-blue-200 text-blue-700 hover:bg-blue-100 hover:text-blue-900 p-2 rounded-full transition-colors shadow-sm"
       target="_blank"
       rel="noopener noreferrer"
     >
@@ -77,9 +77,7 @@ const LogoColumn: React.FC<{ isRTL: boolean; t: (k: string) => string }> = ({ is
         width={100}
       />
     </div>
-    <p className={`text-gray-300 mb-6 ${isRTL ? 'text-right' : 'text-left'}`}>
-      {t('marketLeader')}
-    </p>
+  <p className={`text-gray-700 mb-6 font-medium ${isRTL ? 'text-right' : 'text-left'}`}>{t('marketLeader')}</p>
     <SocialLinks isRTL={isRTL} />
   </div>
 );
@@ -93,19 +91,19 @@ const LinksColumn: React.FC<{ isRTL: boolean; t: (k: string) => string }> = ({ i
     </h3>
     <ul className="space-y-3">
       <li className={`${isRTL ? 'text-right' : 'text-left'}`}>
-        <a href="/" className="text-gray-300 hover:text-white transition-colors block">{t('nav.home')}</a>
+  <a href="/" className="text-gray-700 hover:text-blue-700 transition-colors block font-medium">{t('nav.home')}</a>
       </li>
       <li className={`${isRTL ? 'text-right' : 'text-left'}`}>
-        <a href="#about" className="text-gray-300 hover:text-white transition-colors block">{t('nav.about')}</a>
+  <a href="#about" className="text-gray-700 hover:text-blue-700 transition-colors block font-medium">{t('nav.about')}</a>
       </li>
       <li className={`${isRTL ? 'text-right' : 'text-left'}`}>
-        <a href="#services" className="text-gray-300 hover:text-white transition-colors block">{t('nav.services')}</a>
+  <a href="#services" className="text-gray-700 hover:text-blue-700 transition-colors block font-medium">{t('nav.services')}</a>
       </li>
       <li className={`${isRTL ? 'text-right' : 'text-left'}`}>
-        <a href="#products" className="text-gray-300 hover:text-white transition-colors block">{t('nav.products')}</a>
+  <a href="#products" className="text-gray-700 hover:text-blue-700 transition-colors block font-medium">{t('nav.products')}</a>
       </li>
       <li className={`${isRTL ? 'text-right' : 'text-left'}`}>
-        <a href="#realisations" className="text-gray-300 hover:text-white transition-colors block">{t('nav.projects')}</a>
+  <a href="#realisations" className="text-gray-700 hover:text-blue-700 transition-colors block font-medium">{t('nav.projects')}</a>
       </li>
     </ul>
   </div>
@@ -120,16 +118,16 @@ const ServicesColumn: React.FC<{ isRTL: boolean; t: (k: string) => string }> = (
     </h3>
     <ul className="space-y-3">
       <li className={`${isRTL ? 'text-right' : 'text-left'}`}>
-        <a href="/" className="text-gray-300 hover:text-white transition-colors block">{t('services.concrete')}</a>
+  <a href="/" className="text-gray-700 hover:text-blue-700 transition-colors block font-medium">{t('services.concrete')}</a>
       </li>
       <li className={`${isRTL ? 'text-right' : 'text-left'}`}>
-        <a href="/" className="text-gray-300 hover:text-white transition-colors block">{t('services.cement')}</a>
+  <a href="/" className="text-gray-700 hover:text-blue-700 transition-colors block font-medium">{t('services.cement')}</a>
       </li>
       <li className={`${isRTL ? 'text-right' : 'text-left'}`}>
-        <a href="/" className="text-gray-300 hover:text-white transition-colors block">{t('services.construction')}</a>
+  <a href="/" className="text-gray-700 hover:text-blue-700 transition-colors block font-medium">{t('services.construction')}</a>
       </li>
       <li className={`${isRTL ? 'text-right' : 'text-left'}`}>
-        <a href="/" className="text-gray-300 hover:text-white transition-colors block">{t('services.transport')}</a>
+  <a href="/" className="text-gray-700 hover:text-blue-700 transition-colors block font-medium">{t('services.transport')}</a>
       </li>
     </ul>
   </div>
@@ -143,18 +141,18 @@ const ContactColumn: React.FC<{ isRTL: boolean; t: (k: string) => string }> = ({
       </span>
     </h3>
     <ul className="space-y-4">
-      <ContactItem icon={<Phone size={18} />} isRTL={isRTL}>{t('contact.phone.value')}</ContactItem>
-      <ContactItem icon={<Mail size={18} />} isRTL={isRTL}>{t('contact.email.value')}</ContactItem>
-      <ContactItem icon={<MapPin size={18} />} isRTL={isRTL}>{t('contact.address.city')}, {t('contact.address.country')}</ContactItem>
+  <ContactItem icon={<Phone size={18} />} isRTL={isRTL}><span className="text-blue-700 font-medium">{t('contact.phone.value')}</span></ContactItem>
+  <ContactItem icon={<Mail size={18} />} isRTL={isRTL}><span className="text-blue-700 font-medium">{t('contact.email.value')}</span></ContactItem>
+  <ContactItem icon={<MapPin size={18} />} isRTL={isRTL}><span className="text-blue-700 font-medium">{t('contact.address.city')}, {t('contact.address.country')}</span></ContactItem>
     </ul>
   </div>
 );
 
 const CopyrightBar: React.FC<{ isRTL: boolean; t: any }> = ({ isRTL, t }) => (
-  <div className="border-t border-secondary-light pt-8">
+  <div className="border-t border-blue-200 pt-8">
     <div className="flex flex-col md:flex-row justify-between items-center">
-      <p className={`text-gray-400 text-center ${isRTL ? 'md:text-right' : 'md:text-left'} mb-4 md:mb-0 w-full`}>
-  {t('footer.copyright', { year: new Date().getFullYear() })}
+      <p className={`text-gray-500 text-center ${isRTL ? 'md:text-right' : 'md:text-left'} mb-4 md:mb-0 w-full`}>
+        {t('footer.copyright', { year: new Date().getFullYear() })}
       </p>
     </div>
   </div>
@@ -167,7 +165,7 @@ const Footer: React.FC = () => {
   const isRTL = i18n.dir() === 'rtl';
 
   return (
-    <footer className="bg-secondary text-white pt-16 pb-8">
+  <footer className="bg-gradient-to-br from-white via-blue-50 to-blue-200 text-gray-900 pt-16 pb-8">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <div className={`${dirClass(isRTL)} ${isRTL ? 'lg:order-last' : ''}`}>

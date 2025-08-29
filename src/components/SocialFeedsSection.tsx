@@ -23,11 +23,16 @@ const SocialFeedsSection: React.FC = () => {
 
   const tweetRef = useRef<HTMLDivElement>(null);
   const [tweetLoaded, setTweetLoaded] = useState(false);
+  const [tweetError, setTweetError] = useState<string | null>(null);
+  const [tweetRetryKey, setTweetRetryKey] = useState(0);
   const [fbLoaded, setFbLoaded] = useState(false);
   const [fbError, setFbError] = useState<string | null>(null);
+  const [fbRetryKey, setFbRetryKey] = useState(0);
   const fbCheckInterval = useRef<number | null>(null);
-  // Facebook widget effect
+  // Facebook widget effect (robust loading/error handling)
   useEffect(() => {
+    setFbLoaded(false);
+    setFbError(null);
     if (!document.getElementById('facebook-jssdk')) {
       const script = document.createElement('script');
       script.id = 'facebook-jssdk';
@@ -44,23 +49,25 @@ const SocialFeedsSection: React.FC = () => {
     };
     fbCheckInterval.current = setInterval(checkFbLoaded, 500);
     const timeout = setTimeout(() => {
-      if (!fbLoaded) {
+      const fbWidget = document.querySelector('.fb-page');
+      if (!fbWidget?.querySelector('iframe')) {
         setFbError('Facebook feed failed to load.');
-        if (fbCheckInterval.current) clearInterval(fbCheckInterval.current);
+        setFbLoaded(false);
       }
+      if (fbCheckInterval.current) clearInterval(fbCheckInterval.current);
     }, 10000);
     return () => {
       if (fbCheckInterval.current) clearInterval(fbCheckInterval.current);
       clearTimeout(timeout);
     };
-  }, []);
+  }, [fbRetryKey]);
 
-  // Always display the static tweet and stop loading when it's rendered
+  // Always display the static tweet and stop loading when it's rendered (robust)
   useEffect(() => {
+    setTweetLoaded(false);
+    setTweetError(null);
     if (!tweetRef.current) return;
-    // Remove any previous content (for hot reload/dev)
     tweetRef.current.innerHTML = '';
-    // Create the blockquote element
     const blockquote = document.createElement('blockquote');
     blockquote.className = 'twitter-tweet';
     blockquote.setAttribute('data-width', '380');
@@ -76,11 +83,23 @@ const SocialFeedsSection: React.FC = () => {
       &mdash; MAFCI- مافسي موريتانيا (@mafcimr) <a href="https://twitter.com/mafcimr/status/1947362201628467667?ref_src=twsrc%5Etfw">July 21, 2025</a>
     `;
     tweetRef.current.appendChild(blockquote);
-    // Inject the script if it doesn’t already exist
     function renderTweet() {
       if (window.twttr?.widgets) {
         window.twttr.widgets.load(tweetRef.current);
       }
+    }
+    let loaded = false;
+    function checkLoaded() {
+      if (tweetRef.current?.querySelector('iframe')) {
+        setTweetLoaded(true);
+        loaded = true;
+      }
+    }
+    let interval: any;
+    let timeout: any;
+    function fail() {
+      setTweetError('Twitter feed failed to load.');
+      setTweetLoaded(false);
     }
     if (!document.getElementById('twitter-wjs')) {
       const script = document.createElement('script');
@@ -89,31 +108,35 @@ const SocialFeedsSection: React.FC = () => {
       script.async = true;
       script.onload = () => {
         renderTweet();
-        // Wait for iframe to appear, then set loaded
-        const checkLoaded = setInterval(() => {
-          if (tweetRef.current?.querySelector('iframe')) {
-            setTweetLoaded(true);
-            clearInterval(checkLoaded);
-          }
+        interval = setInterval(() => {
+          checkLoaded();
+          if (loaded) clearInterval(interval);
         }, 300);
-        setTimeout(() => clearInterval(checkLoaded), 10000);
+        timeout = setTimeout(() => {
+          clearInterval(interval);
+          if (!loaded) fail();
+        }, 10000);
       };
       document.body.appendChild(script);
     } else {
       renderTweet();
-      // Wait for iframe to appear, then set loaded
-      const checkLoaded = setInterval(() => {
-        if (tweetRef.current?.querySelector('iframe')) {
-          setTweetLoaded(true);
-          clearInterval(checkLoaded);
-        }
+      interval = setInterval(() => {
+        checkLoaded();
+        if (loaded) clearInterval(interval);
       }, 300);
-      setTimeout(() => clearInterval(checkLoaded), 10000);
+      timeout = setTimeout(() => {
+        clearInterval(interval);
+        if (!loaded) fail();
+      }, 10000);
     }
-  }, []);
+    return () => {
+      if (interval) clearInterval(interval);
+      if (timeout) clearTimeout(timeout);
+    };
+  }, [tweetRetryKey]);
 
+  // YouTube API effect (robust loading/error/fallback)
   useEffect(() => {
-    // Use localStorage to cache YouTube API response for 24 hours
     const cacheKey = `yt_latest_video_${YOUTUBE_CHANNEL_ID}`;
     const cache = localStorage.getItem(cacheKey);
     let cacheValid = false;
@@ -136,16 +159,16 @@ const SocialFeedsSection: React.FC = () => {
           if (data.items) {
             const filtered = data.items.filter((item: any) => item.id.kind === 'youtube#video');
             setVideos(filtered);
-            // Cache the result
+            setYtError(null);
             localStorage.setItem(cacheKey, JSON.stringify({ items: filtered, timestamp: Date.now() }));
           } else {
             setYtError(t('socialFeeds.noVideosFound'));
-            // Log error for debugging
+            setVideos([]);
             console.error('YouTube API error:', data);
           }
         } catch (e) {
           setYtError(t('socialFeeds.youtubeError'));
-          // Log error for debugging
+          setVideos([]);
           console.error('YouTube fetch error:', e);
         }
       }
@@ -182,7 +205,15 @@ const SocialFeedsSection: React.FC = () => {
                   </div>
                 )}
                 {fbError && !fbLoaded && (
-                  <div className="text-red-500 text-center mb-2">{t('socialFeeds.facebookError')}</div>
+                  <div className="flex flex-col items-center justify-center mb-2">
+                    <div className="text-red-500 text-center mb-2">{t('socialFeeds.facebookError') || fbError}</div>
+                    <button
+                      className="mt-2 px-4 py-2 bg-[#1877f3] text-white rounded hover:bg-[#145db2] transition"
+                      onClick={() => setFbRetryKey(k => k + 1)}
+                    >
+                      {t('socialFeeds.retry') || 'Retry'}
+                    </button>
+                  </div>
                 )}
                 <div
                   className="fb-page"
@@ -221,10 +252,21 @@ const SocialFeedsSection: React.FC = () => {
               {/* Only show the heading/label above the widget, not inside the widget */}
               <div className="text-base font-medium text-gray-800 text-center mb-2">{t('socialFeeds.tweetsBy')}</div>
               {/* Always show loading until the tweet is rendered, then show the tweet only */}
-              {!tweetLoaded && (
+              {!tweetLoaded && !tweetError && (
                 <div className="flex flex-col items-center justify-center mb-4 w-full">
                   <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#1da1f2] mb-2"></div>
                   <div className="text-gray-500 text-center">{t('socialFeeds.twitterLoading')}</div>
+                </div>
+              )}
+              {tweetError && !tweetLoaded && (
+                <div className="flex flex-col items-center justify-center mb-2">
+                  <div className="text-red-500 text-center mb-2">{t('socialFeeds.twitterError') || tweetError}</div>
+                  <button
+                    className="mt-2 px-4 py-2 bg-[#1da1f2] text-white rounded hover:bg-[#0d8ddb] transition"
+                    onClick={() => setTweetRetryKey(k => k + 1)}
+                  >
+                    {t('socialFeeds.retry') || 'Retry'}
+                  </button>
                 </div>
               )}
               <div ref={tweetRef} style={{ width: '100%' }} />
