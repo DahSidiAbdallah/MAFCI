@@ -100,27 +100,44 @@ const SocialFeedsSection: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Fetch YouTube videos
-    async function fetchVideos() {
+    // Use localStorage to cache YouTube API response for 1 hour
+    const cacheKey = `yt_latest_video_${YOUTUBE_CHANNEL_ID}`;
+    const cache = localStorage.getItem(cacheKey);
+    let cacheValid = false;
+    if (cache) {
       try {
-        const res = await fetch(
-          `https://www.googleapis.com/youtube/v3/search?key=${YOUTUBE_API_KEY}&channelId=${YOUTUBE_CHANNEL_ID}&part=snippet,id&order=date&maxResults=${YOUTUBE_MAX_RESULTS}`
-        );
-        const data = await res.json();
-        if (data.items) {
-          setVideos(data.items.filter((item: any) => item.id.kind === 'youtube#video'));
-        } else {
-          setYtError('No videos found.');
-          // Log error for debugging
-          console.error('YouTube API error:', data);
+        const parsed = JSON.parse(cache);
+        if (parsed.timestamp && Date.now() - parsed.timestamp < 60 * 60 * 1000 && parsed.items) {
+          setVideos(parsed.items);
+          cacheValid = true;
         }
-      } catch (e) {
-        setYtError('Failed to load YouTube feed.');
-        // Log error for debugging
-        console.error('YouTube fetch error:', e);
-      }
+      } catch {}
     }
-    fetchVideos();
+    if (!cacheValid) {
+      async function fetchVideos() {
+        try {
+          const res = await fetch(
+            `https://www.googleapis.com/youtube/v3/search?key=${YOUTUBE_API_KEY}&channelId=${YOUTUBE_CHANNEL_ID}&part=snippet,id&order=date&maxResults=${YOUTUBE_MAX_RESULTS}`
+          );
+          const data = await res.json();
+          if (data.items) {
+            const filtered = data.items.filter((item: any) => item.id.kind === 'youtube#video');
+            setVideos(filtered);
+            // Cache the result
+            localStorage.setItem(cacheKey, JSON.stringify({ items: filtered, timestamp: Date.now() }));
+          } else {
+            setYtError('No videos found.');
+            // Log error for debugging
+            console.error('YouTube API error:', data);
+          }
+        } catch (e) {
+          setYtError('Failed to load YouTube feed.');
+          // Log error for debugging
+          console.error('YouTube fetch error:', e);
+        }
+      }
+      fetchVideos();
+    }
   }, []);
 
   const { t } = useTranslation();
