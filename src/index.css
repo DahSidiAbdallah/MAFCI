@@ -1,3 +1,10 @@
+/* Hide vertical scrollbar for Facebook feed container */
+.fb-feed-scroll {
+	scrollbar-width: none; /* Firefox */
+}
+.fb-feed-scroll::-webkit-scrollbar {
+	display: none; /* Chrome, Safari */
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

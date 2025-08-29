@@ -184,6 +184,14 @@ i18n
           "contact.address.city": "Nouakchott",
           "contact.address.zip": "BP 5291",
 
+          // Social Feeds Section
+          "socialFeeds.title": "Nos réseaux sociaux",
+          "socialFeeds.facebook": "Facebook",
+          "socialFeeds.twitter": "Twitter/X",
+          "socialFeeds.youtube": "YouTube",
+          "socialFeeds.tweetsBy": "Tweets de @mafcimr",
+          "socialFeeds.facebookLoading": "Chargement du fil Facebook...",
+          "socialFeeds.facebookError": "Le fil Facebook n'a pas pu être chargé.",
           // Footer
           "footer.company": "Entreprise",
           "footer.services": "Services",
@@ -378,6 +386,14 @@ i18n
           "contact.address.city": "نواكشوط",
           "contact.address.country": "موريتانيا",
 
+          // Social Feeds Section
+          "socialFeeds.title": "تابعنا على شبكات التواصل الاجتماعي",
+          "socialFeeds.facebook": "فيسبوك",
+          "socialFeeds.twitter": "تويتر/X",
+          "socialFeeds.youtube": "يوتيوب",
+          "socialFeeds.tweetsBy": "تغريدات @mafcimr",
+          "socialFeeds.facebookLoading": "جاري تحميل منشورات فيسبوك...",
+          "socialFeeds.facebookError": "تعذر تحميل منشورات فيسبوك.",
           // Footer
           "footer.company": "الشركة",
           "footer.services": "الخدمات",

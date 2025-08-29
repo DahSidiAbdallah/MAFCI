@@ -8,6 +8,7 @@ import PartnersSection from './components/PartnersSection';
 import ProjectsSection from './components/ProjectsSection';
 import ContactSection from './components/ContactSection';
 import Footer from './components/Footer';
+import SocialFeedsSection from './components/SocialFeedsSection';
 
 function App() {
   // Set page title
@@ -62,8 +63,9 @@ function App() {
       <TechnicalDatasheetsSection />
       <PartnersSection />
       <ProjectsSection />
-      <ContactSection />
-      <Footer />
+  <ContactSection />
+  <SocialFeedsSection />
+  <Footer />
     </div>
   );
 }
