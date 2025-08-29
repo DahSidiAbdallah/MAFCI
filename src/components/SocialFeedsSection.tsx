@@ -21,10 +21,8 @@ const SocialFeedsSection: React.FC = () => {
   const [videos, setVideos] = useState<any[]>([]);
   const [ytError, setYtError] = useState<string | null>(null);
 
-  const twitterRef = useRef<HTMLDivElement>(null);
-  const [twLoaded, setTwLoaded] = useState(false);
-  const [twError, setTwError] = useState<string | null>(null);
-  const twitterWidgetLoaded = useRef(false);
+  const tweetRef = useRef<HTMLDivElement>(null);
+  const [tweetLoaded, setTweetLoaded] = useState(false);
   const [fbLoaded, setFbLoaded] = useState(false);
   const [fbError, setFbError] = useState<string | null>(null);
   const fbCheckInterval = useRef<number | null>(null);
@@ -57,32 +55,61 @@ const SocialFeedsSection: React.FC = () => {
     };
   }, []);
 
-  // Twitter/X widget effect (embed only once, never remount on language change)
+  // Always display the static tweet and stop loading when it's rendered
   useEffect(() => {
-    if (twitterWidgetLoaded.current) return;
-    twitterWidgetLoaded.current = true;
-    // Add the Twitter script if not present
+    if (!tweetRef.current) return;
+    // Remove any previous content (for hot reload/dev)
+    tweetRef.current.innerHTML = '';
+    // Create the blockquote element
+    const blockquote = document.createElement('blockquote');
+    blockquote.className = 'twitter-tweet';
+    blockquote.setAttribute('data-width', '380');
+    blockquote.setAttribute('data-theme', 'light');
+    blockquote.innerHTML = `
+      <p lang="fr" dir="ltr">
+        𝗠𝗔𝗙𝗖𝗜, recrute via la plateforme <a href="https://twitter.com/hashtag/TECHGHIL?src=hash&amp;ref_src=twsrc%5Etfw">#TECHGHIL</a> des stagiaires pour les postes suivants:<br />
+        • 𝗗𝗲𝘂𝘅 É𝗹𝗲𝗰𝘁𝗿𝗶𝗰𝗶𝗲𝗻𝘀 <a href="https://t.co/zmkIwSpE4X">https://t.co/zmkIwSpE4X</a><br />
+        • 𝗢𝗽é𝗿𝗮𝘁𝗲𝘂𝗿 𝗯𝗿𝗼𝘆𝗲𝘂𝗿<a href="https://t.co/DeNMZuWqeC">https://t.co/DeNMZuWqeC</a><br />
+        Date limite : 24 juillet 2025<br />
+        L <a href="https://twitter.com/hashtag/stage?src=hash&amp;ref_src=twsrc%5Etfw">#stage</a> <a href="https://twitter.com/hashtag/emploi?src=hash&amp;ref_src=twsrc%5Etfw">#emploi</a> <a href="https://twitter.com/hashtag/Mauritanie?src=hash&amp;ref_src=twsrc%5Etfw">#Mauritanie</a>
+      </p>
+      &mdash; MAFCI- مافسي موريتانيا (@mafcimr) <a href="https://twitter.com/mafcimr/status/1947362201628467667?ref_src=twsrc%5Etfw">July 21, 2025</a>
+    `;
+    tweetRef.current.appendChild(blockquote);
+    // Inject the script if it doesn’t already exist
+    function renderTweet() {
+      if (window.twttr?.widgets) {
+        window.twttr.widgets.load(tweetRef.current);
+      }
+    }
     if (!document.getElementById('twitter-wjs')) {
       const script = document.createElement('script');
       script.id = 'twitter-wjs';
       script.src = 'https://platform.twitter.com/widgets.js';
       script.async = true;
-      script.charset = 'utf-8';
+      script.onload = () => {
+        renderTweet();
+        // Wait for iframe to appear, then set loaded
+        const checkLoaded = setInterval(() => {
+          if (tweetRef.current?.querySelector('iframe')) {
+            setTweetLoaded(true);
+            clearInterval(checkLoaded);
+          }
+        }, 300);
+        setTimeout(() => clearInterval(checkLoaded), 10000);
+      };
       document.body.appendChild(script);
+    } else {
+      renderTweet();
+      // Wait for iframe to appear, then set loaded
+      const checkLoaded = setInterval(() => {
+        if (tweetRef.current?.querySelector('iframe')) {
+          setTweetLoaded(true);
+          clearInterval(checkLoaded);
+        }
+      }, 300);
+      setTimeout(() => clearInterval(checkLoaded), 10000);
     }
-    // Check for iframe load
-    const checkTwLoaded = () => {
-      if (twitterRef.current?.querySelector('iframe')) {
-        setTwLoaded(true);
-        setTwError(null);
-      }
-    };
-    const interval = setInterval(checkTwLoaded, 1000);
-    setTimeout(() => {
-      clearInterval(interval);
-      if (!twLoaded) setTwError('twitter');
-    }, 10000);
-    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -193,34 +220,14 @@ const SocialFeedsSection: React.FC = () => {
             <div className="w-full flex flex-col items-center justify-start" style={{ position: 'relative', minHeight: 60 }}>
               {/* Only show the heading/label above the widget, not inside the widget */}
               <div className="text-base font-medium text-gray-800 text-center mb-2">{t('socialFeeds.tweetsBy')}</div>
-              {!twLoaded && !twError && (
+              {/* Always show loading until the tweet is rendered, then show the tweet only */}
+              {!tweetLoaded && (
                 <div className="flex flex-col items-center justify-center mb-4 w-full">
                   <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#1da1f2] mb-2"></div>
                   <div className="text-gray-500 text-center">{t('socialFeeds.twitterLoading')}</div>
                 </div>
               )}
-              {twError && !twLoaded && (
-                <div className="text-red-500 text-center mb-2 w-full">
-                  {t('socialFeeds.twitterError')}
-                  <div className="mt-2 text-sm text-gray-500">
-                    {t('socialFeeds.twitterErrorDetails', {
-                      defaultValue: 'The Twitter/X feed could not be loaded. This may be due to network issues, browser extensions, or Twitter/X restrictions. Try disabling ad blockers, using a different browser, or visiting our profile directly on X.'
-                    })}
-                  </div>
-                  <a
-                    href={"https://x.com/" + TWITTER_HANDLE}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block mt-2 px-4 py-2 bg-[#1da1f2] text-white rounded hover:bg-[#0d8ddb] transition"
-                  >
-                    {t('socialFeeds.visitTwitterProfile', { defaultValue: 'Visit us on X' })}
-                  </a>
-                </div>
-              )}
-              <div ref={twitterRef} style={{ width: '100%' }}>
-                {/* Official Twitter embed code, only rendered once. No duplicate heading inside. */}
-                <a className="twitter-timeline" href="https://twitter.com/mafcimr?ref_src=twsrc%5Etfw"></a>
-              </div>
+              <div ref={tweetRef} style={{ width: '100%' }} />
             </div>
           </div>
           {/* YouTube Feed */}
@@ -229,7 +236,8 @@ const SocialFeedsSection: React.FC = () => {
               <FaYoutube size={36} className="text-[#ff0000]" title="YouTube" />
             </div>
             <div className="w-full flex flex-col items-center">
-              {ytError && (
+              {/* Only show error if there is an error and no video is available */}
+              {ytError && videos.length === 0 && (
                 <div className="text-red-500 text-center">
                   {ytError}
                   <div className="mt-2 text-sm text-gray-500">
@@ -252,20 +260,21 @@ const SocialFeedsSection: React.FC = () => {
               )}
               {videos.length > 0 && (
                 <div className="w-full flex flex-col items-center">
-                  <div className="aspect-w-16 aspect-h-9 w-full max-w-xl mb-4">
+                  <div
+                    className="w-full mb-4"
+                    style={{ maxWidth: 380, height: 240, aspectRatio: '16/9', position: 'relative' }}
+                  >
                     <iframe
                       width="100%"
-                      height="315"
+                      height="100%"
                       src={`https://www.youtube.com/embed/${videos[0].id.videoId}`}
                       title={videos[0].snippet.title}
                       frameBorder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                       className="rounded-lg w-full h-full"
+                      style={{ display: 'block', height: '100%' }}
                     ></iframe>
-                  </div>
-                  <div className="text-base font-medium text-gray-800 text-center">
-                    {videos[0].snippet.title}
                   </div>
                 </div>
               )}
