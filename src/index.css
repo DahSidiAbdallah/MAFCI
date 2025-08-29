@@ -1,3 +1,19 @@
+/* Custom vertical scrollbar for Facebook feed */
+.custom-scrollbar {
+	scrollbar-width: thin;
+	scrollbar-color: #1877f3 #f1f1f1;
+}
+.custom-scrollbar::-webkit-scrollbar {
+	width: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+	background: #1877f3;
+	border-radius: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+	background: #f1f1f1;
+	border-radius: 8px;
+}
 /* Hide vertical scrollbar for Facebook feed container */
 .fb-feed-scroll {
 	scrollbar-width: none; /* Firefox */

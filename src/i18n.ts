@@ -192,6 +192,8 @@ i18n
           "socialFeeds.tweetsBy": "Tweets de @mafcimr",
           "socialFeeds.facebookLoading": "Chargement du fil Facebook...",
           "socialFeeds.facebookError": "Le fil Facebook n'a pas pu être chargé.",
+          "socialFeeds.twitterLoading": "Chargement du fil Twitter...",
+          "socialFeeds.twitterError": "Le fil Twitter n'a pas pu être chargé. Veuillez vérifier votre connexion ou désactiver les bloqueurs de publicités.",
           // Footer
           "footer.company": "Entreprise",
           "footer.services": "Services",
@@ -394,6 +396,8 @@ i18n
           "socialFeeds.tweetsBy": "تغريدات @mafcimr",
           "socialFeeds.facebookLoading": "جاري تحميل منشورات فيسبوك...",
           "socialFeeds.facebookError": "تعذر تحميل منشورات فيسبوك.",
+          "socialFeeds.twitterLoading": "جاري تحميل منشورات تويتر...",
+          "socialFeeds.twitterError": "تعذر تحميل منشورات تويتر. يرجى التحقق من الاتصال أو تعطيل مانع الإعلانات.",
           // Footer
           "footer.company": "الشركة",
           "footer.services": "الخدمات",

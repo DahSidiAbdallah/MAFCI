@@ -22,18 +22,19 @@ const SocialFeedsSection: React.FC = () => {
   const [ytError, setYtError] = useState<string | null>(null);
 
   const twitterRef = useRef<HTMLDivElement>(null);
+  const [twLoaded, setTwLoaded] = useState(false);
+  const [twError, setTwError] = useState<string | null>(null);
   const [fbLoaded, setFbLoaded] = useState(false);
   const [fbError, setFbError] = useState<string | null>(null);
-  const fbCheckInterval = useRef<NodeJS.Timeout | null>(null);
+  const fbCheckInterval = useRef<number | null>(null);
+  // Facebook widget effect
   useEffect(() => {
-    // Load Facebook SDK
     if (!document.getElementById('facebook-jssdk')) {
       const script = document.createElement('script');
       script.id = 'facebook-jssdk';
       script.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v18.0';
       document.body.appendChild(script);
     }
-    // Facebook widget load detection
     const checkFbLoaded = () => {
       const fbWidget = document.querySelector('.fb-page');
       if (fbWidget?.querySelector('iframe')) {
@@ -53,21 +54,49 @@ const SocialFeedsSection: React.FC = () => {
       if (fbCheckInterval.current) clearInterval(fbCheckInterval.current);
       clearTimeout(timeout);
     };
-    // Load Twitter widgets
+  }, []);
+
+  // Twitter/X widget effect
+  useEffect(() => {
+    let twTimeout: number;
+    const checkTwLoaded = () => {
+      if (twitterRef.current?.querySelector('iframe')) {
+        setTwLoaded(true);
+        setTwError(null);
+        clearTimeout(twTimeout);
+      }
+    };
     const renderTwitter = () => {
       if (window.twttr?.widgets && twitterRef.current) {
         window.twttr.widgets.load(twitterRef.current);
+        setTimeout(checkTwLoaded, 1500);
       }
     };
     if (!document.getElementById('twitter-wjs')) {
       const script = document.createElement('script');
       script.id = 'twitter-wjs';
-      script.src = 'https://platform.twitter.com/widgets.js';
+      script.src = 'https://platform.x.com/widgets.js';
       script.onload = renderTwitter;
+      script.onerror = () => {
+        script.remove();
+        const fallbackScript = document.createElement('script');
+        fallbackScript.id = 'twitter-wjs';
+        fallbackScript.src = 'https://platform.twitter.com/widgets.js';
+        fallbackScript.onload = renderTwitter;
+        document.body.appendChild(fallbackScript);
+      };
       document.body.appendChild(script);
     } else {
       renderTwitter();
     }
+    twTimeout = setTimeout(() => {
+      if (!twLoaded) {
+        setTwError('twitter');
+      }
+    }, 10000);
+    return () => {
+      clearTimeout(twTimeout);
+    };
   }, []);
 
   useEffect(() => {
@@ -107,8 +136,8 @@ const SocialFeedsSection: React.FC = () => {
             </div>
             <div className="w-full flex justify-center">
               <div
-                className="w-full flex flex-col items-center bg-white rounded-2xl shadow p-2 fb-feed-scroll"
-                style={{ maxWidth: 500, height: 500, overflowY: 'scroll', overflowX: 'hidden', position: 'relative', boxSizing: 'border-box', borderRadius: '1.5rem' }}
+                className="w-full flex flex-col items-center bg-white rounded-2xl shadow p-2 fb-feed-scroll custom-scrollbar"
+                style={{ maxWidth: 380, height: 480, overflowY: 'auto', overflowX: 'hidden', position: 'relative', boxSizing: 'border-box', borderRadius: '1.5rem', justifyContent: 'center', alignItems: 'center', display: 'flex', fontSize: '0.95rem' }}
               >
                 {!fbLoaded && !fbError && (
                   <div className="flex flex-col items-center justify-center py-12">
@@ -123,20 +152,21 @@ const SocialFeedsSection: React.FC = () => {
                   className="fb-page"
                   data-href={FACEBOOK_PAGE_URL}
                   data-tabs="timeline"
-                  data-width="500"
-                  data-height="500"
+                  data-width="360"
+                  data-height="460"
                   data-small-header="false"
                   data-adapt-container-width="true"
                   data-hide-cover="false"
                   data-show-facepile="true"
                   style={{
-                    width: '100%',
-                    height: '100%',
+                    width: 360,
+                    height: 460,
                     display: fbLoaded ? 'block' : 'none',
                     margin: '0 auto',
                     overflow: 'visible',
                     borderRadius: '1rem',
                     boxSizing: 'border-box',
+                    fontSize: '0.95rem',
                   }}
                 >
                   <blockquote cite={FACEBOOK_PAGE_URL} className="fb-xfbml-parse-ignore">
@@ -151,15 +181,30 @@ const SocialFeedsSection: React.FC = () => {
             <div className="mb-4 flex items-center justify-center">
               <FaTwitter size={36} className="text-[#1da1f2]" title="Twitter/X" />
             </div>
-            <div className="w-full flex justify-center" ref={twitterRef}>
-              <a
-                className="twitter-timeline"
-                data-height="500"
-                data-theme="light"
-                href={`https://twitter.com/${TWITTER_HANDLE}?ref_src=twsrc%5Etfw`}
-              >
-                {t('socialFeeds.tweetsBy')}
-              </a>
+            <div className="w-full flex flex-col items-center justify-start" style={{ position: 'relative', minHeight: 60 }}>
+              <div className="text-base font-medium text-gray-800 text-center mb-2">{t('socialFeeds.tweetsBy')}</div>
+              {!twLoaded && !twError && (
+                <div className="flex flex-col items-center justify-center mb-4 w-full">
+                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#1da1f2] mb-2"></div>
+                  <div className="text-gray-500 text-center">{t('socialFeeds.twitterLoading')}</div>
+                </div>
+              )}
+              {twError && !twLoaded && (
+                <div className="text-red-500 text-center mb-2 w-full">{t('socialFeeds.twitterError')}</div>
+              )}
+              <div ref={twitterRef} style={{ width: '100%' }}>
+                <a
+                  className="twitter-timeline"
+                  data-height="500"
+                  data-theme="light"
+                  href={`https://x.com/${TWITTER_HANDLE}?ref_src=twsrc%5Etfw`}
+                  style={{ display: twLoaded ? 'block' : 'none' }}
+                  data-x-src={`https://x.com/${TWITTER_HANDLE}?ref_src=twsrc%5Etfw`}
+                >
+                  {/* The anchor text is not visible in the widget, so we keep it for accessibility */}
+                  {t('socialFeeds.tweetsBy')}
+                </a>
+              </div>
             </div>
           </div>
           {/* YouTube Feed */}
