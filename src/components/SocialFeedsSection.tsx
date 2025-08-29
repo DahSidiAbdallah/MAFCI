@@ -92,14 +92,14 @@ const SocialFeedsSection: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Use localStorage to cache YouTube API response for 1 hour
+    // Use localStorage to cache YouTube API response for 24 hours
     const cacheKey = `yt_latest_video_${YOUTUBE_CHANNEL_ID}`;
     const cache = localStorage.getItem(cacheKey);
     let cacheValid = false;
     if (cache) {
       try {
         const parsed = JSON.parse(cache);
-        if (parsed.timestamp && Date.now() - parsed.timestamp < 60 * 60 * 1000 && parsed.items) {
+        if (parsed.timestamp && Date.now() - parsed.timestamp < 24 * 60 * 60 * 1000 && parsed.items) {
           setVideos(parsed.items);
           cacheValid = true;
         }
@@ -134,14 +134,14 @@ const SocialFeedsSection: React.FC = () => {
 
   const { t, i18n } = useTranslation();
 
-  // Reset loading/error states when language changes for a cleaner look
+  // Reset loading/error states when language changes for a cleaner look (do not reset YouTube cache)
   React.useEffect(() => {
     setFbLoaded(false);
     setFbError(null);
     setTwLoaded(false);
     setTwError(null);
     setYtError(null);
-    setVideos([]);
+    // Do not reset setVideos([]) here to avoid unnecessary API calls
   }, [i18n.language]);
   return (
     <section className="py-16 bg-gray-50">
