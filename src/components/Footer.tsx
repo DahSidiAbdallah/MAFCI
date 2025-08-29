@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaFacebook, FaTiktok, FaLinkedin, FaYoutube } from 'react-icons/fa';
+import { FaFacebook, FaTiktok, FaLinkedin, FaYoutube, FaTwitter } from 'react-icons/fa';
 import { Phone, Mail, MapPin } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import FooterLogo from '../assets/MAFCI footer.png';
@@ -47,6 +47,14 @@ const SocialLinks: React.FC<{ isRTL: boolean }> = ({ isRTL }) => (
       rel="noopener noreferrer"
     >
       <FaTiktok size={18} />
+    </a>
+    <a
+      href="https://x.com/mafcimr"
+      className="bg-secondary-light hover:bg-primary p-2 rounded-full transition-colors"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <FaTwitter size={18} />
     </a>
     <a
       href="https://www.youtube.com/@MAFCI_mr"

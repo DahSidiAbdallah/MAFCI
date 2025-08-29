@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
-import { FaFacebook, FaTiktok, FaLinkedin, FaYoutube } from 'react-icons/fa';
+import { FaFacebook, FaTiktok, FaLinkedin, FaYoutube, FaTwitter } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 import Logo from './Logo';
 import LanguageSelector from './LanguageSelector';
@@ -87,6 +87,14 @@ const Header: React.FC = () => {
                 rel="noopener noreferrer"
               >
                 <FaTiktok size={18} />
+              </a>
+              <a
+                href="https://x.com/mafcimr"
+                className="text-secondary hover:text-primary transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaTwitter size={18} />
               </a>
             </div>
             <a
@@ -183,6 +191,14 @@ const Header: React.FC = () => {
                   rel="noopener noreferrer"
                 >
                   <FaTiktok size={20} />
+                </a>
+                <a
+                  href="https://x.com/mafcimr"
+                  className="text-secondary hover:text-primary transition-colors"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FaTwitter size={20} />
                 </a>
               </div>
             </div>
