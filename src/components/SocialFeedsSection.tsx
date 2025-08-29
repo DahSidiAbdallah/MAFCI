@@ -24,6 +24,7 @@ const SocialFeedsSection: React.FC = () => {
   const twitterRef = useRef<HTMLDivElement>(null);
   const [twLoaded, setTwLoaded] = useState(false);
   const [twError, setTwError] = useState<string | null>(null);
+  const twitterWidgetLoaded = useRef(false);
   const [fbLoaded, setFbLoaded] = useState(false);
   const [fbError, setFbError] = useState<string | null>(null);
   const fbCheckInterval = useRef<number | null>(null);
@@ -56,39 +57,32 @@ const SocialFeedsSection: React.FC = () => {
     };
   }, []);
 
-  // Twitter/X widget effect
+  // Twitter/X widget effect (embed only once, never remount on language change)
   useEffect(() => {
-    let twTimeout: number;
-    const checkTwLoaded = () => {
-      if (twitterRef.current?.querySelector('iframe')) {
-        setTwLoaded(true);
-        setTwError(null);
-        clearTimeout(twTimeout);
-      }
-    };
-    const renderTwitter = () => {
-      if (window.twttr?.widgets && twitterRef.current) {
-        window.twttr.widgets.load(twitterRef.current);
-        setTimeout(checkTwLoaded, 1500);
-      }
-    };
+    if (twitterWidgetLoaded.current) return;
+    twitterWidgetLoaded.current = true;
+    // Add the Twitter script if not present
     if (!document.getElementById('twitter-wjs')) {
       const script = document.createElement('script');
       script.id = 'twitter-wjs';
       script.src = 'https://platform.twitter.com/widgets.js';
-      script.onload = renderTwitter;
+      script.async = true;
+      script.charset = 'utf-8';
       document.body.appendChild(script);
-    } else {
-      renderTwitter();
     }
-    twTimeout = setTimeout(() => {
-      if (!twLoaded) {
-        setTwError('twitter');
+    // Check for iframe load
+    const checkTwLoaded = () => {
+      if (twitterRef.current?.querySelector('iframe')) {
+        setTwLoaded(true);
+        setTwError(null);
       }
-    }, 10000);
-    return () => {
-      clearTimeout(twTimeout);
     };
+    const interval = setInterval(checkTwLoaded, 1000);
+    setTimeout(() => {
+      clearInterval(interval);
+      if (!twLoaded) setTwError('twitter');
+    }, 10000);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -134,15 +128,11 @@ const SocialFeedsSection: React.FC = () => {
 
   const { t, i18n } = useTranslation();
 
-  // Reset loading/error states when language changes for a cleaner look (do not reset YouTube cache)
-  React.useEffect(() => {
-    setFbLoaded(false);
-    setFbError(null);
-    setTwLoaded(false);
-    setTwError(null);
-    setYtError(null);
-    // Do not reset setVideos([]) here to avoid unnecessary API calls
-  }, [i18n.language]);
+
+  // Only update translatable text on language change, do not reload widgets or API data
+  // This prevents remounting and unnecessary API calls
+  // If you want to mimic a page refresh, you can force a full reload, but that's not recommended for SPA UX
+  // Instead, keep the widgets/data and only update the UI text
   return (
     <section className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">
@@ -201,6 +191,7 @@ const SocialFeedsSection: React.FC = () => {
               <FaTwitter size={36} className="text-[#1da1f2]" title="Twitter/X" />
             </div>
             <div className="w-full flex flex-col items-center justify-start" style={{ position: 'relative', minHeight: 60 }}>
+              {/* Only show the heading/label above the widget, not inside the widget */}
               <div className="text-base font-medium text-gray-800 text-center mb-2">{t('socialFeeds.tweetsBy')}</div>
               {!twLoaded && !twError && (
                 <div className="flex flex-col items-center justify-center mb-4 w-full">
@@ -227,17 +218,8 @@ const SocialFeedsSection: React.FC = () => {
                 </div>
               )}
               <div ref={twitterRef} style={{ width: '100%' }}>
-                <a
-                  className="twitter-timeline"
-                  data-height="500"
-                  data-theme="light"
-                  href={"https://x.com/" + TWITTER_HANDLE + "?ref_src=twsrc%5Etfw"}
-                  style={{ display: twLoaded ? 'block' : 'none' }}
-                  data-x-src={"https://x.com/" + TWITTER_HANDLE + "?ref_src=twsrc%5Etfw"}
-                >
-                  {/* The anchor text is not visible in the widget, so we keep it for accessibility */}
-                  {t('socialFeeds.tweetsBy')}
-                </a>
+                {/* Official Twitter embed code, only rendered once. No duplicate heading inside. */}
+                <a className="twitter-timeline" href="https://twitter.com/mafcimr?ref_src=twsrc%5Etfw"></a>
               </div>
             </div>
           </div>
