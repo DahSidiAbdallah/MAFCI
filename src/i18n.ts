@@ -185,6 +185,8 @@ i18n
           "contact.address.zip": "BP 5291",
 
           // Social Feeds Section
+          // Global Loading Overlay
+          "loading.languageSwitch": "Changement de langue...",
           "socialFeeds.title": "Nos réseaux sociaux",
           "socialFeeds.facebook": "Facebook",
           "socialFeeds.twitter": "Twitter/X",
@@ -194,6 +196,12 @@ i18n
           "socialFeeds.facebookError": "Le fil Facebook n'a pas pu être chargé.",
           "socialFeeds.twitterLoading": "Chargement du fil Twitter...",
           "socialFeeds.twitterError": "Le fil Twitter n'a pas pu être chargé. Veuillez vérifier votre connexion ou désactiver les bloqueurs de publicités.",
+  "socialFeeds.visitTwitterProfile": "Voir notre profil sur X",
+  "socialFeeds.noVideosFound": "Aucune vidéo trouvée",
+  "socialFeeds.youtubeErrorDetails": "Le fil YouTube n'a pas pu être chargé. Cela peut être dû au quota de l'API, à des problèmes de réseau ou à des restrictions de YouTube. Réessayez plus tard ou visitez directement notre chaîne.",
+  "socialFeeds.visitYoutubeChannel": "Voir notre chaîne YouTube",
+          "socialFeeds.youtubeLoading": "Chargement ou aucune vidéo trouvée. Veuillez vérifier votre ID de chaîne et votre clé API.",
+
           // Footer
           "footer.company": "Entreprise",
           "footer.services": "Services",
@@ -389,6 +397,8 @@ i18n
           "contact.address.country": "موريتانيا",
 
           // Social Feeds Section
+          // Global Loading Overlay
+          "loading.languageSwitch": "... جاري تبديل اللغة",
           "socialFeeds.title": "تابعنا على شبكات التواصل الاجتماعي",
           "socialFeeds.facebook": "فيسبوك",
           "socialFeeds.twitter": "تويتر/X",
@@ -398,6 +408,12 @@ i18n
           "socialFeeds.facebookError": "تعذر تحميل منشورات فيسبوك.",
           "socialFeeds.twitterLoading": "جاري تحميل منشورات تويتر...",
           "socialFeeds.twitterError": "تعذر تحميل منشورات تويتر. يرجى التحقق من الاتصال أو تعطيل مانع الإعلانات.",
+  "socialFeeds.visitTwitterProfile": "زيارة صفحتنا على X",
+  "socialFeeds.noVideosFound": "لا توجد فيديوهات",
+  "socialFeeds.youtubeErrorDetails": "تعذر تحميل منشورات يوتيوب. قد يكون ذلك بسبب تجاوز الحصة اليومية أو مشاكل في الشبكة أو قيود من يوتيوب. يرجى المحاولة لاحقًا أو زيارة قناتنا مباشرة.",
+  "socialFeeds.visitYoutubeChannel": "زيارة قناتنا على يوتيوب",
+          "socialFeeds.youtubeLoading": "جاري التحميل أو لا توجد فيديوهات. يرجى التأكد من معرف القناة ومفتاح API.",
+  "socialFeeds.youtubedesc": "لا توجد فيديوهات",
           // Footer
           "footer.company": "الشركة",
           "footer.services": "الخدمات",
@@ -424,5 +440,12 @@ i18n
       }
     }
   });
+
+// Patch i18n.changeLanguage to emit a 'languageChanging' event before changing
+const originalChangeLanguage = i18n.changeLanguage.bind(i18n);
+i18n.changeLanguage = function (lng, ...args) {
+  i18n.emit && i18n.emit('languageChanging', lng);
+  return originalChangeLanguage(lng, ...args);
+};
 
 export default i18n;

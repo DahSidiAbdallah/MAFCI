@@ -75,16 +75,8 @@ const SocialFeedsSection: React.FC = () => {
     if (!document.getElementById('twitter-wjs')) {
       const script = document.createElement('script');
       script.id = 'twitter-wjs';
-      script.src = 'https://platform.x.com/widgets.js';
+      script.src = 'https://platform.twitter.com/widgets.js';
       script.onload = renderTwitter;
-      script.onerror = () => {
-        script.remove();
-        const fallbackScript = document.createElement('script');
-        fallbackScript.id = 'twitter-wjs';
-        fallbackScript.src = 'https://platform.twitter.com/widgets.js';
-        fallbackScript.onload = renderTwitter;
-        document.body.appendChild(fallbackScript);
-      };
       document.body.appendChild(script);
     } else {
       renderTwitter();
@@ -126,12 +118,12 @@ const SocialFeedsSection: React.FC = () => {
             // Cache the result
             localStorage.setItem(cacheKey, JSON.stringify({ items: filtered, timestamp: Date.now() }));
           } else {
-            setYtError('No videos found.');
+            setYtError(t('socialFeeds.noVideosFound'));
             // Log error for debugging
             console.error('YouTube API error:', data);
           }
         } catch (e) {
-          setYtError('Failed to load YouTube feed.');
+          setYtError(t('socialFeeds.youtubeError'));
           // Log error for debugging
           console.error('YouTube fetch error:', e);
         }
@@ -140,7 +132,17 @@ const SocialFeedsSection: React.FC = () => {
     }
   }, []);
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  // Reset loading/error states when language changes for a cleaner look
+  React.useEffect(() => {
+    setFbLoaded(false);
+    setFbError(null);
+    setTwLoaded(false);
+    setTwError(null);
+    setYtError(null);
+    setVideos([]);
+  }, [i18n.language]);
   return (
     <section className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">
@@ -207,16 +209,31 @@ const SocialFeedsSection: React.FC = () => {
                 </div>
               )}
               {twError && !twLoaded && (
-                <div className="text-red-500 text-center mb-2 w-full">{t('socialFeeds.twitterError')}</div>
+                <div className="text-red-500 text-center mb-2 w-full">
+                  {t('socialFeeds.twitterError')}
+                  <div className="mt-2 text-sm text-gray-500">
+                    {t('socialFeeds.twitterErrorDetails', {
+                      defaultValue: 'The Twitter/X feed could not be loaded. This may be due to network issues, browser extensions, or Twitter/X restrictions. Try disabling ad blockers, using a different browser, or visiting our profile directly on X.'
+                    })}
+                  </div>
+                  <a
+                    href={"https://x.com/" + TWITTER_HANDLE}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block mt-2 px-4 py-2 bg-[#1da1f2] text-white rounded hover:bg-[#0d8ddb] transition"
+                  >
+                    {t('socialFeeds.visitTwitterProfile', { defaultValue: 'Visit us on X' })}
+                  </a>
+                </div>
               )}
               <div ref={twitterRef} style={{ width: '100%' }}>
                 <a
                   className="twitter-timeline"
                   data-height="500"
                   data-theme="light"
-                  href={`https://x.com/${TWITTER_HANDLE}?ref_src=twsrc%5Etfw`}
+                  href={"https://x.com/" + TWITTER_HANDLE + "?ref_src=twsrc%5Etfw"}
                   style={{ display: twLoaded ? 'block' : 'none' }}
-                  data-x-src={`https://x.com/${TWITTER_HANDLE}?ref_src=twsrc%5Etfw`}
+                  data-x-src={"https://x.com/" + TWITTER_HANDLE + "?ref_src=twsrc%5Etfw"}
                 >
                   {/* The anchor text is not visible in the widget, so we keep it for accessibility */}
                   {t('socialFeeds.tweetsBy')}
@@ -230,8 +247,27 @@ const SocialFeedsSection: React.FC = () => {
               <FaYoutube size={36} className="text-[#ff0000]" title="YouTube" />
             </div>
             <div className="w-full flex flex-col items-center">
-              {ytError && <div className="text-red-500 text-center">{ytError}</div>}
-              {!ytError && videos.length === 0 && <div className="text-gray-500 text-center">Loading or no videos found. Please check your channel ID and API key.</div>}
+              {ytError && (
+                <div className="text-red-500 text-center">
+                  {ytError}
+                  <div className="mt-2 text-sm text-gray-500">
+                    {t('socialFeeds.youtubeErrorDetails')}
+                  </div>
+                  <a
+                    href={"https://www.youtube.com/channel/" + YOUTUBE_CHANNEL_ID}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block mt-2 px-4 py-2 bg-[#ff0000] text-white rounded hover:bg-[#c20000] transition"
+                  >
+                    {t('socialFeeds.visitYoutubeChannel')}
+                  </a>
+                </div>
+              )}
+              {!ytError && videos.length === 0 && (
+                <div className="text-gray-500 text-center">
+                  {t('socialFeeds.youtubeLoading')}
+                </div>
+              )}
               {videos.length > 0 && (
                 <div className="w-full flex flex-col items-center">
                   <div className="aspect-w-16 aspect-h-9 w-full max-w-xl mb-4">

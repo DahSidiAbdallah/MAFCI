@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
 import AboutSection from './components/AboutSection';
@@ -9,11 +9,34 @@ import ProjectsSection from './components/ProjectsSection';
 import ContactSection from './components/ContactSection';
 import Footer from './components/Footer';
 import SocialFeedsSection from './components/SocialFeedsSection';
+import LoadingOverlay from './components/LoadingOverlay';
+import i18n from './i18n';
+
 
 function App() {
   // Set page title
   useEffect(() => {
     document.title = "MAFCI | Leader en Ciment et Béton";
+  }, []);
+
+  // Global loading overlay for language switch
+  const [loading, setLoading] = useState(false);
+  const timeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const handleLangChange = () => {
+      setLoading(true);
+      // Give time for content to update and for fade effect
+  if (timeoutRef.current) clearTimeout(timeoutRef.current);
+  timeoutRef.current = window.setTimeout(() => setLoading(false), 900);
+    };
+    i18n.on('languageChanging', handleLangChange); // custom event, see below
+    i18n.on('languageChanged', handleLangChange);
+    return () => {
+      i18n.off('languageChanging', handleLangChange);
+      i18n.off('languageChanged', handleLangChange);
+  if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
   }, []);
 
   // Simulate AOS (Animate on Scroll) functionality with simple intersection observer
@@ -56,6 +79,7 @@ function App() {
 
   return (
     <div className="font-sans">
+      <LoadingOverlay visible={loading} />
       <Header />
       <HeroSection />
       <AboutSection />
@@ -63,9 +87,9 @@ function App() {
       <TechnicalDatasheetsSection />
       <PartnersSection />
       <ProjectsSection />
-  <ContactSection />
-  <SocialFeedsSection />
-  <Footer />
+      <ContactSection />
+      <SocialFeedsSection />
+      <Footer />
     </div>
   );
 }
